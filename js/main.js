@@ -61,19 +61,21 @@ function Editor(){
 	
 	
 	
-	$("newProject").onclick = function(){
+	$("newPalette").onclick = function(){
+		alert("Not implemented");
+		return;
 		if(editor.projectSaved || confirm("Unsaved changes will be lost, continue?")){
 			editor.ClearProject();
 		}
 	}
 	
-	var btnLoadProject = CreateFileInput(function(){
+	var btnLoadPalette = CreateFileInput(function(){
 		editor.LoadProject(this);
 		this.value = '';
 	});
-	$("loadProject").onclick = function(){
+	$("loadPalette").onclick = function(){
 		if(editor.projectSaved || confirm("Unsaved changes will be lost, continue?")){
-			btnLoadProject.click(); 
+			btnLoadPalette.click(); 
 		}
 	}
 	
@@ -86,107 +88,14 @@ function Editor(){
 	}
 	 
 	this.LoadProject = function(element){ 
+		alert("Not implemented");
 		this.ClearProject();
-		for(var i=0; i<element.files.length; i++){ 
-			
-			var file = element.files[i];  
-			
-			var reader = new FileReader();
-			reader.name = file.name; 
-			reader.onload = function(){  
-				if(getExtension(this.name) == "zip"){
-					
-					var zip = new JSZip(this.result);
-					
-					var projFile = zip.files["project.agp"];
-					var data = JSON.parse(projFile.asText());
-					
-					for(var j=0; j<data.length; j++){
-						var sprInfo = data[j];
-						
-						var sprite = editor.AddSprite(sprInfo.name);
-						sprite.width = sprInfo.width;
-						sprite.height = sprInfo.height;
-						sprite.borderLeft = sprInfo.borderLeft;
-						sprite.borderTop = sprInfo.borderTop;
-						sprite.borderRight = sprInfo.borderRight;
-						sprite.borderBottom = sprInfo.borderBottom; 
-				
-						for(var k=0; k<sprInfo.subimages.length; k++){
-							var imageName = "images/"+sprInfo.subimages[k]+".png"; 
-							//image and rect for the atlas
-							var img = new Image(); 
-							img.src = "data:image/png;base64,"+toBase64(zip.files[imageName].asUint8Array());
-							 
-							var rect = new Rect(img);
-							rect.sprite = sprite;
-							sprite.rects.push(rect); 
-							sprite.container.appendChild(PreviewImage(sprite, img.src, imageName));
-							
-						}
-						
-					}
-					
-					
-					/*
-					for(var entryName in zip.files){
-						entry = zip.files[entryName];
-						var ext = getExtension(entryName);
-						if(ext == "png"){
-							var img = new Image();
-							img.src = "data:image/png;base64,"+toBase64(entry.asUint8Array());
-							
-						}
-						
-					} 
-					*/ 
-				}else{
-					console.log("wrong format");
-				}
-			}
-		};
-		reader.readAsBinaryString(file);
+		
 	}
 	
 	
-	$("saveProject").onclick = function(){
-		
-		var zip = new JSZip();
-		 
-		var fid = getDateString("_");
-		
-		var data = [];
-		var id = 0;
-		for(var i = 0; i < editor.sprites.length; i++){
-			var sprite = editor.sprites[i]; 
-			var obj = {
-				name : sprite.name,
-				width : sprite.width,
-				height : sprite.height,
-				borderLeft : sprite.borderLeft,
-				borderTop : sprite.borderTop,
-				borderRight : sprite.borderRight,
-				borderBottom : sprite.borderBottom,
-				subimages : []
-			}
-			
-			  
-		
-			for(var j = 0; j < sprite.rects.length; j++){
-				var img = sprite.rects[j].image; 
-				var name = sprite.name + "_"+id;
-				obj.subimages.push(name);
-				zip.file("images/"+name+".png", img.src.substr(img.src.indexOf(',')+1), {base64: true});
-				id++;				
-			}
-			data.push(obj);
-		}
-		 
-		zip.file("project.agp",  JSON.stringify(data, undefined, 2) ); 
-		
-		
-		var blob = zip.generate({type:"blob"}); 
-		saveAs(blob, "Project"+fid+".zip");
+	$("savePalette").onclick = function(){
+		alert("Not implemented");
 		
 		editor.projectSaved = true;
 	}
@@ -234,9 +143,7 @@ function Editor(){
 	this.Apply = function(){ 
 		 
 		var imgData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-		 
-	
-		 
+		  
 		var w = imgData.width;
 		var h = imgData.height;
 		var data = imgData.data; 
