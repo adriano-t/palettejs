@@ -6,10 +6,12 @@
 	<script language="javascript" src="js/main.js" ></script>
 	<script language="javascript" src="js/resources.js" ></script> 
 	<script language="javascript" src="js/utils.js" ></script>
+	<script language="javascript"  src="js/colorpicker/jscolor.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	
 </head>
 <body style="background-color:#eee;" >
-	<div id="EditorDiv" style="overflow:auto; float:left;" >
+	<div  class="bgray" id="EditorDiv" style="overflow:auto; float:left;" >
 		<canvas id="mainCanvas" >
 		
 		</canvas>
@@ -17,12 +19,13 @@
 	<div id="Options" style="overflow:auto; position:absolute;">
 		<h2 style="text-align:center;" > Palette JS </h2> 
 		
+		
+		
 		<p>
 		<b>Texture </b>
 		<input id="loadTexture" type="button" value="Load" />
 		<input style="float:right;" id="showHelp" type="button" value="Help" />
 		</p>
-		
 		
 		<p>
 		<b>Output</b>
@@ -35,11 +38,15 @@
 		<input id="loadPalette" class="back-blue" type="button" value="Load" /> 
 		<input id="savePalette" class="back-blue" type="button" value="Save" />
 		</p>
-		 
+
 		<p id="paletteContainer"></p>
+		 <div id="colorPicker" style="display:none;">
+			<input id="inputPicker" class="color" value="66ff00">
+		</div>
 		 
 		
 	</div>
+	 
 	
 	<div id ="blackContainer" style="display:none; " >
 		
@@ -54,6 +61,21 @@
 				<li><b></b> :  </li> 
 				
 				</ul>
+			</div>
+			 
+		</div>
+		
+		
+		<div id="winPalette" style="background-color:#eee; display:none; position:absolute; z-index:1; overflow:auto;">
+
+			<input onclick="DisableElements(['blackContainer','winPalette']);"; type="button" value="X" style="float:right; " />
+			<h2 style="text-align:center" >Palettes</h2> 
+			<p>
+				<input id="paletteCreate" type="button" value="Create New" />
+		
+			</p>
+			<div id="paletteList">
+				 
 			</div>
 			 
 		</div>

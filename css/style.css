@@ -1,8 +1,7 @@
 
 body,p,div{ margin:0; border:0;padding:0;} 
 p{border:1px solid #ddd; padding:4px; padding-bottom:0px;}
-#help{padding:5px;}
-div{border:1px solid #555;}  
+#help{padding:5px;} 
 .icon{
 	border:1px solid #555;
 	-webkit-border-radius: 7px;
@@ -102,8 +101,7 @@ div{border:1px solid #555;}
  
 /* Basic Grey */
  
-
-div{
+.bgray{
     background: #F7F7F7; 
     font: 14px 'Segoe UI Light', Georgia, sans-serif;
     color: #888;
@@ -111,9 +109,9 @@ div{
     border:1px solid #E4E4E4;
 }
   
-h2 { 
+h2  { 
 	padding:8px;
-	color: #eee;
+	color: #e5e5e5;
 	text-shadow: -1px -1px 1px #969696, 1px 1px 1px #fff;
     font: 28px "Segoe UI",sans-serif;
 	font-weight:  bold;
@@ -235,3 +233,23 @@ input[type="button"]:hover {
 #blackContainer div{
     border-radius: 3px;
 }
+
+.icon-add{
+	width : 16px;
+	height : 16px; 
+	display : inline-block;
+	margin-right : 5px;
+	background : url(../img/add_icon.png); 
+}
+.icon-add:hover{
+	opacity:0.5;
+}
+
+.icon-color{
+	width : 16px;
+	height : 16px; 
+	display : inline-block;
+	margin-right : 2px;
+	border:1px solid black;
+}
+
