@@ -65,7 +65,9 @@ function Editor()
 		if(el){
 			var s = this.color.toString();;
 			el.style.backgroundColor = "#"+s
+			
 			var rgb = hexToRgb(s); 
+			el.color = [rgb.r, rgb.g, rgb.b];
 			editor.palette[editor.DOMcolors.indexOf(el)] = [rgb.r, rgb.g, rgb.b];
 		}
 	}
@@ -74,8 +76,8 @@ function Editor()
 	this.paletteList = [];
 	this.paletteId = 1;
 	var list = localStorage["paletteList"];
-	if(list)
-	{	
+	if(list && list.length > 2)
+	{	 
 		this.paletteList = JSON.parse(list);
 		
 		var lastPalette = parseInt(localStorage["lastPalette"]);
@@ -102,14 +104,16 @@ function Editor()
 	$("apply").onclick = function(){
 		editor.Apply();
 	};
-	
-	$("paletteCreate").onclick = function(){
-		
-	}
-	
+	 
 	$("newPalette").onclick = function(){ 
 		if(editor.saved || confirm("Unsaved changes will be lost, continue?")){
 			editor.ClearPalette();
+				
+			this.DOMcolors = [];
+			//destroy old palette
+			this.palette = [];
+			this.paletteId = -1;
+			
 		}
 	}
 	
@@ -139,15 +143,78 @@ function Editor()
 		btnLoadTexture.click();
 	}
 	 
-	this.LoadPalette = function(element){ 
-		EnableElements(["winPalette", "blackContainer"]);
-		this.ClearPalette();
+	this.LoadPalette = function(element){
+		var l = $("paletteList");
+		l.innerHTML = "";
+		var div = document.createElement("div");
+		l.appendChild(div);
+		var rows = 6;
+		var columns = 7;
 		
+		for(var n in this.paletteList)
+		{
+			
+			var pal = JSON.parse(localStorage["palette"+this.paletteList[n]]);
+				
+			var c = CreateCanvas(16*columns, 16*rows);
+			var canvas = c.canvas;
+			canvas.paletteId = this.paletteList[n];
+			canvas.className = "palette-preview";
+			var ctx = c.context;
+			
+			canvas.palette = pal;
+			canvas.onclick = function(){
+				editor.ClearPalette();
+				editor.palette = this.palette;
+				console.log(editor.palette);
+				updatePalette(editor.palette);
+				
+				DisableElements(["winPalette", "blackContainer"]);
+			}
+			
+			canvas.oncontextmenu = function(e){
+				e.preventDefault(); 
+				canvas.parentNode.removeChild(this);
+				localStorage.removeItem('palette'+this.paletteId);
+				editor.paletteList.splice(editor.paletteList.indexOf(this.paletteId), 1);
+				localStorage["paletteList"] = JSON.stringify(editor.paletteList);
+				if(editor.paletteId == this.paletteId)
+				{
+					localStorage["lastPalette"] = editor.paletteList[0];
+				}
+				
+				
+			}
+			
+			
+			var x=0, y=0;
+			for(var i in pal)
+			{
+				
+				var col = pal[i];
+				ctx.fillStyle = "#"+rgbToHex(col[0],col[1],col[2]);
+				ctx.fillRect(x*16, y*16, 16, 16);
+				
+				x++;
+				if(x >= columns)
+				{
+					x = 0;
+					y++;
+				}
+				if(y>=rows)
+					break;
+				
+			}
+			div.appendChild(canvas);
+		}
+		
+		
+		EnableElements(["winPalette", "blackContainer"]); 
 	}
 	this.SavePalette = function(){
 		if(this.palette.length <= 0 )
 			return;
-		
+		 
 		if(this.paletteId <= 0)
 		{
 			var id = 1;
@@ -159,7 +226,7 @@ function Editor()
 					break;
 			}
 			this.paletteId = id;
-			this.paletteList.push(this.paletteId);
+			this.paletteList.push(this.paletteId); 
 		}
 		
 		localStorage["lastPalette"] = this.paletteId; 
@@ -168,9 +235,6 @@ function Editor()
 	
 	}
 	
-	//sortPalette(this.palette);
-	updatePalette(this.palette);
-		
 	this.OnChangeFile = function(element){ 
 	 
 		for(var i=0; i<element.files.length; i++){
@@ -209,6 +273,7 @@ function Editor()
 	
 	this.Apply = function(){ 
 		this.ctx.drawImage(this.bCanvas, 0, 0); 
+		console.log(this.palette)
 		var palette = this.palette;
 		var imgData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
 		var w = imgData.width;
@@ -264,34 +329,34 @@ function Editor()
 	
 	this.ClearPalette = function(){
 		editor.saved = true;
-		this.palette = [];
-		this.paletteId = -1;
 		
 		var cont = $("paletteContainer");
 		cont.innerHTML = "";
-		//destroy old palette
-		 
+		
+		//add button
+		var el = document.createElement("span");
+		el.className = "icon-add";
+		el.onclick = function()
+		{
+			addColor([128, 128, 128]);
+			editor.palette.push([128, 128, 128]);
+		} 
+		cont.appendChild(el);
+		
 	}
 	   
 	    
+	//sortPalette(this.palette);
+	updatePalette(this.palette);
 }
 
 
 function updatePalette(palette){ 
 	 //sortPalette(palette);
-	var cont = $("paletteContainer");
-	cont.innerHTML = "";
+	var cont = $("paletteContainer"); 
+	editor.ClearPalette();
 	
-	//add button
-	var el = document.createElement("span");
-	el.className = "icon-add";
-	el.onclick = function()
-	{
-		addColor([128, 128, 128]);
-		editor.palette.push([128, 128, 128]);
-	}
 		
-	cont.appendChild(el);
 	
 	var len = palette.length;
 	for(var i=0; i<len; i++)
@@ -362,6 +427,9 @@ function sortPalette(palette)
 			j--;
 		}
 	}
+	
+	
+		
 }
  
 function sortPaletteHSV(palette)
@@ -400,8 +468,7 @@ function sortPaletteHSV(palette)
 	
 	for(var i=0; i<len; i++)
 	{
-		var c1 = palette[i];
-		console.log(colorHSV(c1));
+		var c1 = palette[i]; 
 	}
 	
 }

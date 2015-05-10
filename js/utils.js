@@ -5,6 +5,13 @@ function getExtension(filename){
 	return filename.substr(filename.lastIndexOf('.') + 1).toLowerCase();
 }
 
+function CreateCanvas(width, height){
+	var canvas = document.createElement("canvas");
+	canvas.width = width;
+	canvas.height = height;
+	var ctx = canvas.getContext("2d");
+	return {canvas:canvas, context:ctx};
+}
 function CreateFileInput(callback, display)
 {
 	var finput = document.createElement('input');
