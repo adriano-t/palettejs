@@ -139,12 +139,13 @@ function Editor()
 		EnableElements(["help", "blackContainer"]);
 	}
 	 
-	var btnLoadTexture = CreateFileInput(function(){
+	var btnLoadTexture = CreateFileInput(function(){ 
 		editor.OnChangeFile(this);
+		
 	});
 	
 	$("loadTexture").onclick = function()
-	{
+	{ 
 		btnLoadTexture.click();
 	}
 	 
@@ -248,31 +249,37 @@ function Editor()
 	
 	this.OnChangeFile = function(element){ 
 	 
+		console.log("OnChangeFile executed " + element);
 		for(var i=0; i<element.files.length; i++){
 			var file = element.files[i]; 
 			
+			console.log("file "+ i + ": " + file);
 			var reader = new FileReader();
 			reader.name = file.name;
 			 
 			reader.onload = function(){
-			
+			 
 				var extension = this.name.substr(this.name.lastIndexOf('.') + 1).toLowerCase();
  
 				if(extension == "png" || extension  == "jpg"  || extension  == "jpeg"  || extension  == "bmp" ){
-					 var img = new Image();
+					var img = new Image();
 					img.src = this.result;
-					
-					editor.baseTexture = img;
-					editor.canvas.width = img.width;
-					editor.canvas.height = img.height;
-					editor.ctx.drawImage(img, 0, 0);
-					
-					editor.bCanvas.width = img.width;
-					editor.bCanvas.height = img.height;
-					editor.bCtx.drawImage(img, 0, 0);
+					img.onload = function(){
+						editor.baseTexture = img;
+						editor.canvas.width = img.width;
+						editor.canvas.height = img.height;
+						editor.ctx.drawImage(img, 0, 0);
+						
+						editor.bCanvas.width = img.width;
+						editor.bCanvas.height = img.height;
+						editor.bCtx.drawImage(img, 0, 0);
+					}
 					
 					//render in the canvas
 					
+				}
+				else{
+					alert("wrong file extension (only jpg and png)");
 				}
 				
 			};
