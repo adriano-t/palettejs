@@ -12,17 +12,16 @@
 </head>
 <body style="background-color:#eee;" >
 	<div  class="bgray" id="EditorDiv" style="overflow:auto; float:left;" >
-		<canvas id="mainCanvas" >
+		<canvas id="mainCanvas" width="512" height="512" >
 		
 		</canvas>
 	</div> 
 	<div id="Options" style="overflow:auto; position:absolute;">
 		<h2 style="text-align:center;" > Palette JS </h2> 
 		
-		
-		
 		<p>
 		<b>Texture </b>
+		<input id="ramp" type="button" value="Generate" />
 		<input id="loadTexture" type="button" value="Load" />
 		<input style="float:right;" id="showHelp" type="button" value="Help" />
 		</p>
@@ -37,6 +36,7 @@
 		<input id="newPalette" class="back-blue" type="button" value="New" /> 
 		<input id="loadPalette" class="back-blue" type="button" value="Load" /> 
 		<input id="savePalette" class="back-blue" type="button" value="Save" />
+		<input id="generatePalette" class="back-blue" type="button" value="Generate" />
 		</p>
 
 		<p id="paletteContainer"></p>
